@@ -18,6 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Slf4j
 public class distribute_lock {
     //用来模拟两个请求，都可以进入方法，但是只有一个能拿到锁
+    private Lock lock = new ReentrantLock();    //用来模拟两个请求，都可以进入方法，但是只有一个能拿到锁
     @RequestMapping("singleLock")
     public String singleLock(){
         log.info("我进入了方法");
