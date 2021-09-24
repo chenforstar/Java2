@@ -94,5 +94,7 @@ public interface DistributeLockMapper {
      */
     int updateByPrimaryKey(DistributeLock record);
 
+    
+    //businessCode是用来区分这个锁是锁的哪个业务，比如这里锁的是订单业务
     DistributeLock selectDistributeLock(@Param("businessCode") String businessCode);
 }
