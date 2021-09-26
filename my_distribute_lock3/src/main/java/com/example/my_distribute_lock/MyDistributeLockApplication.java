@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @MapperScan("com.example.my_distribute_lock.dao")
-@EnableScheduling
+@EnableScheduling//定时
 public class MyDistributeLockApplication {
     public static void main(String[] args) {
         SpringApplication.run(MyDistributeLockApplication.class, args);
