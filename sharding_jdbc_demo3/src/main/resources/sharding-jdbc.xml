@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:shardingsphere="http://shardingsphere.apache.org/schema/shardingsphere/datasource"
+       xmlns:sharding="http://shardingsphere.apache.org/schema/shardingsphere/sharding"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://shardingsphere.apache.org/schema/shardingsphere/datasource
+                           http://shardingsphere.apache.org/schema/shardingsphere/datasource/datasource.xsd
+                           http://shardingsphere.apache.org/schema/shardingsphere/sharding
+                           http://shardingsphere.apache.org/schema/shardingsphere/sharding/sharding.xsd">
+
+<!--    配置数据源,就是对应的数据库,有几个数据库就配置几个ds-->
+    <bean id="ds0" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/sharding_jdbc?serverTimezone=Asia/Shanghai&amp;useSSL=false" />
+        <property name="username" value="root" />
+        <property name="password" value="root" />
+    </bean>
+
+    <bean id="ds1" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/sharding_jdbc2?serverTimezone=Asia/Shanghai&amp;useSSL=false" />
+        <property name="username" value="root" />
+        <property name="password" value="root" />
+    </bean>
+
+
+    <!--    t_order1指的是实际表-->
+    <!--    逻辑表logic-table="t_order",要注意将mapper李米娜的实际表调整为逻辑虚拟表-->
+
+
+<!--    配置sharding-jdbc数据源-->
+
+    <sharding:data-source id="sharding-data-source">
+<!--        有几个数据源就配置几个-->
+        <sharding:sharding-rule data-source-names="ds0,ds1">
+<!--            表的分配方式-->
+<!--        虚拟表:t_order
+            真实的物理表:t_order_1,t_order_2
+            数据节点(数据库.数据表),例如:ds0.t_order_1
+            选择数据库的策略:databaseStrategy
+            选择数据表的策略:tableStrategy -->
+            <sharding:table-rules>
+                <sharding:table-rule logic-table="t_order"
+                                     actual-data-nodes="ds$->{0..1}.t_order_$->{1..2}"
+                                     database-strategy-ref="databaseStrategy"
+                                     table-strategy-ref="tableStrategy"/>
+            </sharding:table-rules>
+<!--            <sharding:broadcast-table-rules>-->
+<!--                <sharding:broadcast-table-rule table="area"/>-->
+<!--            </sharding:broadcast-table-rules>-->
+        </sharding:sharding-rule>
+    </sharding:data-source>
+<!--    在一个行内的分片策略-->
+<!--    依据user_id对2取模选择要保存的数据库-->
+    <sharding:inline-strategy id="databaseStrategy" sharding-column="user_id" algorithm-expression="ds$->{user_id%2}"/>
+<!--    依据id对一个数据库里的表的分片规则-->
+    <sharding:inline-strategy id="tableStrategy" sharding-column="order_id" algorithm-expression="t_order_$->{order_id%2+1}"/>
+
+<!--指定sharding-data-sourace作为数据源,指定mapper路径-->
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="sharding-data-source"/>
+        <property name="mapperLocations" value="classpath*:/mybatis/*.xml"/>
+    </bean>
+</beans>
