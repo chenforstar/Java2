@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ImportResource;
 
 @SpringBootApplication
-//@ImportResource("classpath*:sharding-jdbc.xml")
+@ImportResource("classpath*:sharding-jdbc.xml")
 @MapperScan("com.example.sharding_jdbc_demo3.dao")
 public class ShardingJdbcDemo3Application {
 

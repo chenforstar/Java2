@@ -45,18 +45,25 @@
                 <sharding:table-rule logic-table="t_order"
                                      actual-data-nodes="ds$->{0..1}.t_order_$->{1..2}"
                                      database-strategy-ref="databaseStrategy"
-                                     table-strategy-ref="tableStrategy"/>
+                                     table-strategy-ref="tableStrategy"
+                                     key-generator-ref="keyGenerator"
+                />
             </sharding:table-rules>
 <!--            <sharding:broadcast-table-rules>-->
 <!--                <sharding:broadcast-table-rule table="area"/>-->
 <!--            </sharding:broadcast-table-rules>-->
         </sharding:sharding-rule>
     </sharding:data-source>
+
+    <sharding:key-generator id="keyGenerator" column="order_id" type="UUID"/>
 <!--    在一个行内的分片策略-->
 <!--    依据user_id对2取模选择要保存的数据库-->
     <sharding:inline-strategy id="databaseStrategy" sharding-column="user_id" algorithm-expression="ds$->{user_id%2}"/>
 <!--    依据id对一个数据库里的表的分片规则-->
-    <sharding:inline-strategy id="tableStrategy" sharding-column="order_id" algorithm-expression="t_order_$->{order_id%2+1}"/>
+<!--    <sharding:inline-strategy id="tableStrategy" sharding-column="order_id" algorithm-expression="t_order_$->{order_id%2+1}"/>-->
+<!--    实例化一个bean-->
+    <bean id = "myShard" class="com.example.sharding_jdbc_demo3.sharding.MySharding"/>
+    <sharding:standard-strategy id="tableStrategy" sharding-column="order_id" precise-algorithm-ref="myShard"/>
 
 <!--指定sharding-data-sourace作为数据源,指定mapper路径-->
     <bean class="org.mybatis.spring.SqlSessionFactoryBean">
