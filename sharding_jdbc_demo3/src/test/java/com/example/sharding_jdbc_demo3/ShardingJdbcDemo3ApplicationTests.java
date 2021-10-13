@@ -21,10 +21,10 @@ class ShardingJdbcDemo3ApplicationTests {
     @Test
     void testOrder(){
         Order order = new Order();
-        order.setUserId(12);//用户id->选择哪个数据库
-        order.setOrderId(1);//选择哪个表
+        order.setUserId(5);//用户id->选择哪个数据库
+        //order.setOrderId("jason");//选择哪个表
 
-        orderMapper.insert(order);
+        orderMapper.insertSelective(order);
 
 
     }

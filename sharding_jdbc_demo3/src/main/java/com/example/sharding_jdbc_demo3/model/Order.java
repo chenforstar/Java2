@@ -8,7 +8,7 @@ public class Order {
      *
      * @mbg.generated Wed Oct 13 15:53:10 CST 2021
      */
-    private Integer orderId;
+    private String orderId;
 
     /**
      *
@@ -27,7 +27,7 @@ public class Order {
      *
      * @mbg.generated Wed Oct 13 15:53:10 CST 2021
      */
-    public Integer getOrderId() {
+    public String getOrderId() {
         return orderId;
     }
 
@@ -39,7 +39,7 @@ public class Order {
      *
      * @mbg.generated Wed Oct 13 15:53:10 CST 2021
      */
-    public void setOrderId(Integer orderId) {
+    public void setOrderId(String orderId) {
         this.orderId = orderId;
     }
 
